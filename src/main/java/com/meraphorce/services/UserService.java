@@ -1,7 +1,7 @@
-package com.tiktok.servicetiktok.services;
+package com.meraphorce.services;
 
-import com.tiktok.servicetiktok.respositories.UserRepository;
-import com.tiktok.servicetiktok.model.User;
+import com.meraphorce.models.User;
+import com.meraphorce.respositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

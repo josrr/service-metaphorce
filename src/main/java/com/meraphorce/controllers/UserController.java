@@ -1,9 +1,7 @@
-package com.tiktok.servicetiktok.controller;
+package com.meraphorce.controllers;
 
-import com.tiktok.servicetiktok.model.User;
-import com.tiktok.servicetiktok.services.UserService;
-import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
+import com.meraphorce.models.User;
+import com.meraphorce.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
