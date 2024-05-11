@@ -1,4 +1,4 @@
-package com.tiktok.servicetiktok;
+package com.meraphorce;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

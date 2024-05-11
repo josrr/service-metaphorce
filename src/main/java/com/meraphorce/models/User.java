@@ -1,4 +1,4 @@
-package com.tiktok.servicetiktok.model;
+package com.meraphorce.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,5 +19,4 @@ public class User {
     private String id;
     private String name;
     private String email;
-
 }

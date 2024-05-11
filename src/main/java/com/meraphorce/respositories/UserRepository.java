@@ -1,6 +1,6 @@
-package com.tiktok.servicetiktok.respositories;
+package com.meraphorce.respositories;
 
-import com.tiktok.servicetiktok.model.User;
+import com.meraphorce.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
