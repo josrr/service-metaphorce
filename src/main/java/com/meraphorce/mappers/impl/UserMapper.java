@@ -1,10 +1,12 @@
-package com.meraphorce.mapper.impl;
+package com.meraphorce.mappers.impl;
 
 import com.meraphorce.dto.UserResponse;
 import com.meraphorce.dto.UserRequest;
 import com.meraphorce.mappers.MapperI;
 import com.meraphorce.models.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper implements MapperI<User, UserResponse, UserRequest>
 {
     @Override
