@@ -20,7 +20,7 @@ public class UserService
     @Autowired
     private UserMapper mapper;
 
-    public UserResponse createUser(UserRequest user) throws UserAlreadyExistsException {
+    public UserResponse createUser(UserRequest user) {
         if ( userRepository.existsById(user.getId()) )
             throw new UserAlreadyExistsException(String.format("User with id=%s already exists",
                                                                user.getId()));
@@ -33,21 +33,21 @@ public class UserService
             .collect(Collectors.toList());
     }
 
-    public UserResponse getUserById(String id) throws ResourceNotFoundException {
+    public UserResponse getUserById(String id) {
         return userRepository.findById(id)
             .map(mapper::entityToResponse)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id=%s not found",
                                                                            id)));
     }
 
-    public void deleteUser(String id) throws ResourceNotFoundException {
+    public void deleteUser(String id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id=%s not found",
                                                                            id)));
         userRepository.delete(user);
     }
 
-    public UserResponse updateUser(String id, UserRequest request) throws ResourceNotFoundException {
+    public UserResponse updateUser(String id, UserRequest request) {
         if ( ! userRepository.existsById(id) )
             throw new ResourceNotFoundException(String.format("User with id=%s not found", id));
         User user = mapper.requestToEntity(request);
