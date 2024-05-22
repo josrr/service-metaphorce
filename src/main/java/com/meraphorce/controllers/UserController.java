@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class UserController
     private UserMapper mapper;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest user) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest user) {
         return ResponseEntity.ok(mapper.entityToResponse(userService
                                                          .createUser(mapper.requestToEntity(user))));
     }
@@ -42,7 +43,7 @@ public class UserController
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable String id,
-                                                   @RequestBody UserRequest userRequest) {
+                                                   @Valid @RequestBody UserRequest userRequest) {
         return ResponseEntity
             .ok(mapper.entityToResponse(userService
                                         .updateUser(id, mapper.requestToEntity(userRequest))));
