@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService
@@ -14,9 +15,7 @@ public class UserService
     private UserRepository userRepository;
 
     public User createUser(User user) {
-        if ( userRepository.existsById(user.getId()) )
-            throw new UserAlreadyExistsException(String.format("User with id=%s already exists",
-                                                               user.getId()));
+        user.setId(UUID.randomUUID().toString());
         return userRepository.save(user);
     }
 
