@@ -1,15 +1,11 @@
 package com.meraphorce.services;
 
-import com.meraphorce.dto.UserResponse;
-import com.meraphorce.dto.UserRequest;
 import com.meraphorce.models.User;
 import com.meraphorce.respositories.UserRepository;
-import com.meraphorce.mappers.impl.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService
@@ -17,25 +13,19 @@ public class UserService
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserMapper mapper;
-
-    public UserResponse createUser(UserRequest user) {
+    public User createUser(User user) {
         if ( userRepository.existsById(user.getId()) )
             throw new UserAlreadyExistsException(String.format("User with id=%s already exists",
                                                                user.getId()));
-        return mapper.entityToResponse(userRepository.save(mapper.requestToEntity(user)));
+        return userRepository.save(user);
     }
 
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
-            .map(mapper::entityToResponse)
-            .collect(Collectors.toList());
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    public UserResponse getUserById(String id) {
+    public User getUserById(String id) {
         return userRepository.findById(id)
-            .map(mapper::entityToResponse)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("User with id=%s not found",
                                                                            id)));
     }
@@ -47,11 +37,10 @@ public class UserService
         userRepository.delete(user);
     }
 
-    public UserResponse updateUser(String id, UserRequest request) {
+    public User updateUser(String id, User request) {
         if ( ! userRepository.existsById(id) )
             throw new ResourceNotFoundException(String.format("User with id=%s not found", id));
-        User user = mapper.requestToEntity(request);
-        user.setId(id);
-        return mapper.entityToResponse(userRepository.save(user));
+        request.setId(id);
+        return userRepository.save(request);
     }
 }
