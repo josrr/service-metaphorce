@@ -52,4 +52,9 @@ public class UserController
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/names")
+    public ResponseEntity<List<String>> getNames() {
+        return ResponseEntity.ok(userService.getNames());
+    }
 }
