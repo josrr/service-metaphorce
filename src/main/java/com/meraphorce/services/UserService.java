@@ -42,4 +42,8 @@ public class UserService
         request.setId(id);
         return userRepository.save(request);
     }
+
+    public List<String> getNames() {
+        return userRepository.findNames();
+    }
 }
