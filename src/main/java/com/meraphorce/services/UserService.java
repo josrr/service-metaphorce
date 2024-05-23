@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -15,6 +16,10 @@ public class UserService
     private UserRepository userRepository;
 
     public User createUser(User user) {
+        Optional<User> userOpt = userRepository.findByEmail(user.getEmail());
+        if ( userOpt.isPresent() )
+            throw new UserAlreadyExistsException(String.format("A user with email=%s already exists.",
+                                                               user.getEmail()));
         user.setId(UUID.randomUUID().toString());
         return userRepository.save(user);
     }
