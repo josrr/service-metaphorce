@@ -3,6 +3,7 @@ package com.meraphorce.controllers;
 import com.meraphorce.dto.StatusResponse;
 import com.meraphorce.dto.UserRequest;
 import com.meraphorce.mappers.impl.UserMapper;
+import com.meraphorce.services.UserAlreadyExistsException;
 import com.meraphorce.services.UserService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.ConstraintViolation;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/bulk")
@@ -36,11 +39,18 @@ public class BulkController
         return ResponseEntity.ok(users.stream().map(user -> {
                     Set<ConstraintViolation<UserRequest>> violations = validator.validate(user);
                     if ( violations.isEmpty() ) {
-                        userService.createUser(mapper.requestToEntity(user));
-                        return StatusResponse.builder()
-                            .status(HttpStatus.OK)
-                            .message(String.format("New user with name=%s created", user.getName()))
-                            .build();
+                        try {
+                            userService.createUser(mapper.requestToEntity(user));
+                            return StatusResponse.builder()
+                                .status(HttpStatus.OK.value())
+                                .message(String.format("New user with name=%s created", user.getName()))
+                                .build();
+                        } catch ( UserAlreadyExistsException ex ) {
+                            return StatusResponse.builder()
+                                .status(HttpStatus.BAD_REQUEST.value())
+                                .message(ex.getMessage())
+                                .build();
+                        }
                     } else {
                         StringJoiner joiner = new StringJoiner(", ");
                         for ( ConstraintViolation<UserRequest> constraintViolation : violations ) {
@@ -48,7 +58,7 @@ public class BulkController
                                                      constraintViolation.getMessage()));
                         }
                         return StatusResponse.builder()
-                            .status(HttpStatus.BAD_REQUEST).message(joiner.toString())
+                            .status(HttpStatus.BAD_REQUEST.value()).message(joiner.toString())
                             .build();
                     }
                 }).collect(Collectors.toList()));
