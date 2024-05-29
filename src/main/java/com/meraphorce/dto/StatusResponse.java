@@ -1,6 +1,5 @@
 package com.meraphorce.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +13,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 public class StatusResponse {
-    private int status;
+    private Boolean created;
     private String message;
 }
