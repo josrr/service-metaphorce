@@ -21,7 +21,6 @@ public class UserMapper implements MapperI<User, UserResponse, UserRequest>
     @Override
     public User requestToEntity(UserRequest request) {
         return User.builder()
-            .id(request.getId())
             .name(request.getName())
             .email(request.getEmail())
             .build();
@@ -39,7 +38,6 @@ public class UserMapper implements MapperI<User, UserResponse, UserRequest>
     @Override
     public UserRequest entityToRequest(User entity) {
         return UserRequest.builder()
-            .id(entity.getId())
             .name(entity.getName())
             .email(entity.getEmail())
             .build();

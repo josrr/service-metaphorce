@@ -2,13 +2,14 @@ package com.meraphorce.controllers;
 
 import com.meraphorce.dto.UserResponse;
 import com.meraphorce.dto.UserRequest;
-import com.meraphorce.models.User;
+import com.meraphorce.mappers.impl.UserMapper;
 import com.meraphorce.services.UserService;
+import jakarta.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -17,30 +18,43 @@ public class UserController
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserMapper mapper;
+
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest user){
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest user) {
+        return ResponseEntity.ok(mapper.entityToResponse(userService
+                                                         .createUser(mapper.requestToEntity(user))));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers(){
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers().stream()
+                                 .map(mapper::entityToResponse)
+                                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        return ResponseEntity.ok(mapper.entityToResponse(userService.getUserById(id)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable String id,
-                                                   @RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(userService.updateUser(id, userRequest));
+                                                   @Valid @RequestBody UserRequest userRequest) {
+        return ResponseEntity
+            .ok(mapper.entityToResponse(userService
+                                        .updateUser(id, mapper.requestToEntity(userRequest))));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/names")
+    public ResponseEntity<List<String>> getNames() {
+        return ResponseEntity.ok(userService.getNames());
     }
 }
