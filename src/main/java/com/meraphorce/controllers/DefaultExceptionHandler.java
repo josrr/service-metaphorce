@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.meraphorce.services.UserAlreadyExistsException;
 import com.meraphorce.services.ResourceNotFoundException;
+import com.meraphorce.services.UserAlreadyExistsException;
+import com.meraphorce.services.UserNotFoundException;
 
 @ControllerAdvice
 public class DefaultExceptionHandler extends ResponseEntityExceptionHandler
 {
-    @ExceptionHandler({ ResourceNotFoundException.class })
+    @ExceptionHandler({ UserNotFoundException.class, ResourceNotFoundException.class })
     public final ResponseEntity<String> handleResourceNotFoundException(RuntimeException e, WebRequest request)
     {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
