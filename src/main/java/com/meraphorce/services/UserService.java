@@ -1,7 +1,7 @@
 package com.meraphorce.services;
 
-import com.meraphorce.dto.StatusResponse;
-import com.meraphorce.dto.UserRequest;
+import com.meraphorce.dtos.StatusResponse;
+import com.meraphorce.dtos.UserRequest;
 import com.meraphorce.models.User;
 import com.meraphorce.processors.UserBulkProcessor;
 import com.meraphorce.respositories.UserRepository;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,11 +18,14 @@ public class UserService
 {
     private final UserRepository repository;
     private final UserBulkProcessor processor;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository repository, UserBulkProcessor processor) {
+    public UserService(UserRepository repository, UserBulkProcessor processor,
+                       PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.processor = processor;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(User user) {
@@ -29,6 +33,8 @@ public class UserService
             throw new UserAlreadyExistsException(String.format("A user with email=%s already exists.",
                                                                user.getEmail()));
         user.setId(UUID.randomUUID().toString());
+        if ( user.getPassword() != null )
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.save(user);
     }
 
@@ -66,11 +72,13 @@ public class UserService
         repository.delete(user);
     }
 
-    public User updateUser(String id, User request) {
+    public User updateUser(String id, User user) {
         if ( ! repository.existsById(id) )
             throw new ResourceNotFoundException(String.format("User with id=%s not found", id));
-        request.setId(id);
-        return repository.save(request);
+        user.setId(id);
+        if ( user.getPassword() != null )
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return repository.save(user);
     }
 
     public List<String> getNames() {
