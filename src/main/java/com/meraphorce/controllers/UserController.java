@@ -1,25 +1,36 @@
 package com.meraphorce.controllers;
 
-import com.meraphorce.dto.UserResponse;
-import com.meraphorce.dto.UserRequest;
+import com.meraphorce.dtos.UserResponse;
+import com.meraphorce.dtos.UserRequest;
 import com.meraphorce.mappers.impl.UserMapper;
 import com.meraphorce.services.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for managing users.
+ */
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
+@Slf4j
+@Validated
 public class UserController
 {
-    @Autowired
-    private UserService userService;
+    private final UserMapper mapper;
+    private final UserService userService;
 
     @Autowired
-    private UserMapper mapper;
+    public UserController(UserMapper mapper, UserService userService) {
+        this.mapper = mapper;
+        this.userService = userService;
+    }
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest user) {
@@ -57,4 +68,5 @@ public class UserController
     public ResponseEntity<List<String>> getNames() {
         return ResponseEntity.ok(userService.getNames());
     }
+
 }
