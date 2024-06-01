@@ -1,4 +1,4 @@
-package com.meraphorce.dto;
+package com.meraphorce.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +10,9 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class UserResponse {
+public class SignUpResponse {
     private String id;
-    private String name;
+    private String username;
     private String email;
+    private String roles;
 }

@@ -1,4 +1,4 @@
-package com.meraphorce.dto;
+package com.meraphorce.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
