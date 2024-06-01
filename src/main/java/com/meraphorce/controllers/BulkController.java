@@ -1,7 +1,7 @@
 package com.meraphorce.controllers;
 
-import com.meraphorce.dto.StatusResponse;
-import com.meraphorce.dto.UserRequest;
+import com.meraphorce.dtos.StatusResponse;
+import com.meraphorce.dtos.UserRequest;
 import com.meraphorce.mappers.impl.UserMapper;
 import com.meraphorce.services.UserService;
 import jakarta.validation.constraints.NotEmpty;
