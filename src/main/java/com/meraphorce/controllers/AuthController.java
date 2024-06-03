@@ -1,6 +1,7 @@
 package com.meraphorce.controllers;
 
 import com.meraphorce.dtos.AuthRequest;
+import com.meraphorce.dtos.AuthResponse;
 import com.meraphorce.dtos.SignUpResponse;
 import com.meraphorce.dtos.SignUpRequest;
 import com.meraphorce.models.User;
@@ -60,12 +61,14 @@ public class AuthController
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@Valid @RequestBody AuthRequest authRequest) {
-        log.debug("authRequest: {}", authRequest);
+    public ResponseEntity<AuthResponse> authenticateAndGetToken(@Valid @RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate
-            (new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+            ( new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()) );
         if ( authentication.isAuthenticated() ) {
-            return jwtService.generateToken(authRequest.getUsername());
+            return ResponseEntity.ok(AuthResponse.builder()
+                                     .type("Bearer")
+                                     .token(jwtService.generateToken(authRequest.getUsername()))
+                                     .build());
         } else {
             throw new UsernameNotFoundException("Invalid user request!");
         }
