@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,18 +27,36 @@ public class UserController
     private final UserMapper mapper;
     private final UserService userService;
 
+    /**
+     * Constructs a UserController with the necessary dependencies.
+     *
+     * @param mapper the mapper from UserResponse and UserRequest objects to User objects.
+     * @param userService the service handling user operations.
+     */
     @Autowired
     public UserController(UserMapper mapper, UserService userService) {
         this.mapper = mapper;
         this.userService = userService;
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param user the UserRequest object representing the user to be created
+     * @return a ResponseEntity containing the created user and HTTP status CREATED
+     */
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest user) {
-        return ResponseEntity.ok(mapper.entityToResponse(userService
-                                                         .createUser(mapper.requestToEntity(user))));
+        return new ResponseEntity<>(mapper.entityToResponse(userService
+                                                            .createUser(mapper.requestToEntity(user))),
+                                    HttpStatus.CREATED);
     }
 
+    /**
+     * Retrieves the list of all users.
+     *
+     * @return a ResponseEntity containing the list of all users and HTTP status OK
+     */
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers().stream()
@@ -45,11 +64,24 @@ public class UserController
                                  .collect(Collectors.toList()));
     }
 
+    /**
+     * Retrieves an user by id
+     *
+     * @Param id a string containing the id of the user to retrieve
+     * @return a ResponseEntity containing the user and HTTP status OK
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
         return ResponseEntity.ok(mapper.entityToResponse(userService.getUserById(id)));
     }
 
+    /**
+     * Updates an existing user.
+     *
+     * @param id the id of the user to update
+     * @param userRequest the UserRequest object representing the updated user information
+     * @return a ResponseEntity containing the updated user and HTTP status OK
+     */
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable String id,
                                                    @Valid @RequestBody UserRequest userRequest) {
@@ -58,12 +90,23 @@ public class UserController
                                         .updateUser(id, mapper.requestToEntity(userRequest))));
     }
 
+    /**
+     * Deletes a user by their id.
+     *
+     * @param id the id of the user to delete
+     * @return a ResponseEntity with no content
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Retrieves the names of all users.
+     *
+     * @return a ResponseEntity containing a list of all user names
+     */
     @GetMapping("/names")
     public ResponseEntity<List<String>> getNames() {
         return ResponseEntity.ok(userService.getNames());

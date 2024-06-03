@@ -17,12 +17,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bulk")
 public class BulkController
 {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
+    /**
+     * Constructs a BulkController with the necessary dependencies.
+     *
+     * @param userService the service handling user operations.
+     */
     @Autowired
-    private UserMapper mapper;
+    public BulkController(UserService userService) {
+        this.userService = userService;
+    }
 
+    /**
+     * Creates multiple new users in bulk.
+     *
+     * @param users a list of UserRequest objects representing the users to be created
+     * @return a ResponseEntity containing the list of creation status of every user and HTTP status OK
+     */
     @PostMapping("/users")
     public ResponseEntity<List<StatusResponse>> createUsersInBulk(@NotEmpty @Size(min=1, max=100)
                                                                   @RequestBody List<UserRequest> users) {

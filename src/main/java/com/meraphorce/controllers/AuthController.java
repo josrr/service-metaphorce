@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +25,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * REST controller for managing users.
+ * REST controller for managing the authorization of users.
  */
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -35,31 +36,44 @@ public class AuthController
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final SignUpMapper signUpMapper;
-    // private final UserInfoService userInfoService;
     private final UserService userService;
 
+    /**
+     * Constructs a AuthController with the necessary dependencies.
+     *
+     * @param authenticationManager
+     * @param jwtService
+     * @param signUpMapper
+     * @param userService the service handling user operations
+     */
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtService jwtService,
-                          SignUpMapper singUpMapper, // UserInfoService userInfoService,
-                          UserService userService) {
+                          SignUpMapper singUpMapper, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.signUpMapper = singUpMapper;
-        // this.userInfoService = userInfoService;
         this.userService = userService;
     }
 
+    /**
+     * Signup a new user.
+     *
+     * @param request the SignUpRequest object representing the new user to signup
+     * @return a ResponseEntity containing the created user and HTTP status CREATED
+     */
     @PostMapping("/signup")
     public ResponseEntity<SignUpResponse> signUp(@Valid @RequestBody SignUpRequest request) {
-        return ResponseEntity.ok(signUpMapper.entityToResponse
-                                 (userService.createUser(signUpMapper.requestToEntity(request))));
+        return new ResponseEntity<>(signUpMapper.entityToResponse
+                                    (userService.createUser(signUpMapper.requestToEntity(request))),
+                                    HttpStatus.CREATED);
     }
 
-    @GetMapping("/welcome")
-    public String welcome() {
-        return "This endpoint is not secure yet";
-    }
-
+    /**
+     * Generates a new JWT token.
+     *
+     * @param authRequest the AuthRequest object that contains the credential of the user
+     * @return a ResponseEntity containing the generated token and HTTP status OK
+     */
     @PostMapping("/generateToken")
     public ResponseEntity<AuthResponse> authenticateAndGetToken(@Valid @RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate
