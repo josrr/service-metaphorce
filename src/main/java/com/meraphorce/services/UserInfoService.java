@@ -12,16 +12,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Service to get the user details.
+ */
 @Service
 public class UserInfoService implements UserDetailsService
 {
     private final UserRepository repository;
-    private final PasswordEncoder encoder;
 
+    /**
+     * Constructs a UserInfoService with the necessary dependencies.
+     *
+     * @param repository the repository for accessing user data.
+     */
     @Autowired
-    public UserInfoService(UserRepository repository, PasswordEncoder encoder) {
+    public UserInfoService(UserRepository repository) {
         this.repository = repository;
-        this.encoder = encoder;
     }
 
     @Override
@@ -34,9 +40,4 @@ public class UserInfoService implements UserDetailsService
                                                                            username)));
     }
 
-    public String addUser(User userInfo) {
-        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
-        repository.save(userInfo);
-        return "User Added Successfully";
-    }
 }

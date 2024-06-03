@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * This results in a HTTP 404 Not Found response.
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class UserNotFoundException extends RuntimeException {
-
+public class UserNotFoundException extends RuntimeException
+{
     /**
      * Constructs a new UserNotFoundException with the specified detail message.
      * @param message the detail message.
