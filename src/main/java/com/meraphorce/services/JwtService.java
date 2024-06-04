@@ -24,7 +24,7 @@ public class JwtService
     private String secretKey;
 
     /**
-     * Generates a new toeken.
+     * Generates a new token.
      *
      * @param userName the name of the user
      * @return a string containing the token
