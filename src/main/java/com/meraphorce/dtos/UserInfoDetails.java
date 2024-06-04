@@ -10,12 +10,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Data Transfer Object to represent user info details.
+ *
+ */
 public class UserInfoDetails implements UserDetails
 {
     private String name;
     private String password;
     private List<GrantedAuthority> authorities;
 
+    /**
+     * Creates a new UserInfoDetails from a User instance.
+     *
+     * @param userInfo a User instance
+     */
     public UserInfoDetails(User userInfo) {
         name = userInfo.getName();
         password = userInfo.getPassword();

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Data Transfer Object for JWT response.
+ * Data Transfer Object for authorization response.
  *
  */
 
