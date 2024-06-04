@@ -2,6 +2,8 @@ package com.meraphorce.services;
 
 import com.meraphorce.dtos.StatusResponse;
 import com.meraphorce.dtos.UserRequest;
+import com.meraphorce.exceptions.ResourceNotFoundException;
+import com.meraphorce.exceptions.UserAlreadyExistsException;
 import com.meraphorce.models.User;
 import com.meraphorce.processors.UserBulkProcessor;
 import com.meraphorce.respositories.UserRepository;
