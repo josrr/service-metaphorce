@@ -67,13 +67,13 @@ public class UserService
         return users.stream().map(request -> {
                 try {
                     processor.processUser(request);
-                    return StatusResponse.builder().created(true)
+                    return StatusResponse.builder().successful(true)
                         .message(String.format("New user with name=%s created", request.getName()))
                         .build();
                 } catch ( UserAlreadyExistsException | ConstraintViolationException ex ) {
-                    return StatusResponse.builder().created(false).message(ex.getMessage()).build();
+                    return StatusResponse.builder().successful(false).message(ex.getMessage()).build();
                 } catch ( Exception ex ) {
-                    return StatusResponse.builder().created(false)
+                    return StatusResponse.builder().successful(false)
                         .message(String.format("An unexpected error occurred: %s", ex.getMessage()))
                         .build();
                 }
