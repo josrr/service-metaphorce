@@ -6,9 +6,18 @@ import com.meraphorce.mappers.MapperI;
 import com.meraphorce.models.User;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper interface to translate between user entities objects and sign up DTO objects.
+ */
 @Component
 public class SignUpMapper implements MapperI<User, SignUpResponse, SignUpRequest>
 {
+    /**
+     * Translates from the SignUpRequest DTO to the User entity object.
+     *
+     * @param request a SignUpRequest DTO
+     * @return a User entity object
+     */
     @Override
     public User requestToEntity(SignUpRequest request) {
         return User.builder()
@@ -19,6 +28,12 @@ public class SignUpMapper implements MapperI<User, SignUpResponse, SignUpRequest
             .build();
     }
 
+    /**
+     * Translates from the User entity object to the SignUpResponse DTO.
+     *
+     * @param entity a User entity object
+     * @return a SignUpResponse DTO
+     */
     @Override
     public SignUpResponse entityToResponse(User entity) {
         return SignUpResponse.builder()
@@ -28,5 +43,4 @@ public class SignUpMapper implements MapperI<User, SignUpResponse, SignUpRequest
             .roles(entity.getRoles())
             .build();
     }
-
 }
