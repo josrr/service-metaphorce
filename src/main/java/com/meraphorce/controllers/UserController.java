@@ -5,6 +5,7 @@ import com.meraphorce.dtos.UserRequest;
 import com.meraphorce.mappers.impl.UserMapper;
 import com.meraphorce.services.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -47,8 +48,8 @@ public class UserController
      */
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest user) {
-        return new ResponseEntity<>(mapper.entityToResponse(userService
-                                                            .createUser(mapper.requestToEntity(user))),
+        log.info("Creating user: {}", user);
+        return new ResponseEntity<>(mapper.entityToResponse(userService.createUser(mapper.requestToEntity(user))),
                                     HttpStatus.CREATED);
     }
 
@@ -59,9 +60,12 @@ public class UserController
      */
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers().stream()
-                                 .map(mapper::entityToResponse)
-                                 .collect(Collectors.toList()));
+        log.info("Fetching all users");
+        List<UserResponse> users = userService.getAllUsers().stream()
+            .map(mapper::entityToResponse)
+            .collect(Collectors.toList());
+        log.info("Fetched {} users", users.size());
+        return ResponseEntity.ok(users);
     }
 
     /**
@@ -71,7 +75,8 @@ public class UserController
      * @return a ResponseEntity containing the user and HTTP status OK
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
+    public ResponseEntity<UserResponse> getUserById(@NotBlank @PathVariable String id) {
+        log.info("Fetching user with id: {}", id);
         return ResponseEntity.ok(mapper.entityToResponse(userService.getUserById(id)));
     }
 
@@ -85,9 +90,9 @@ public class UserController
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable String id,
                                                    @Valid @RequestBody UserRequest userRequest) {
+        log.info("Updating user with id: {}", id);
         return ResponseEntity
-            .ok(mapper.entityToResponse(userService
-                                        .updateUser(id, mapper.requestToEntity(userRequest))));
+            .ok(mapper.entityToResponse(userService.updateUser(id, mapper.requestToEntity(userRequest))));
     }
 
     /**
@@ -98,6 +103,7 @@ public class UserController
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        log.info("Deleting user with id: {}", id);
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
@@ -109,6 +115,7 @@ public class UserController
      */
     @GetMapping("/names")
     public ResponseEntity<List<String>> getNames() {
+        log.info("Get names of all users");
         return ResponseEntity.ok(userService.getNames());
     }
 
