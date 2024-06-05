@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,6 +39,7 @@ public class BulkController
      * @return a ResponseEntity containing the list of creation status of every user and HTTP status OK
      */
     @PostMapping("/users")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<List<StatusResponse>> createUsersInBulk(@NotEmpty @Size(min=1, max=100)
                                                                   @RequestBody List<UserRequest> users) {
         log.info("Creating {} users in bulk", users.size());

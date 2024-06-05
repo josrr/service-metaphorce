@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,7 @@ public class UserController
      * @return a ResponseEntity containing the created user and HTTP status CREATED
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest user) {
         log.info("Creating user: {}", user);
         return new ResponseEntity<>(mapper.entityToResponse(userService.createUser(mapper.requestToEntity(user))),
@@ -59,6 +61,7 @@ public class UserController
      * @return a ResponseEntity containing the list of all users and HTTP status OK
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','MANAGER','USER')")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         log.info("Fetching all users");
         List<UserResponse> users = userService.getAllUsers().stream()
@@ -75,6 +78,7 @@ public class UserController
      * @return a ResponseEntity containing the user and HTTP status OK
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','MANAGER','USER')")
     public ResponseEntity<UserResponse> getUserById(@NotBlank @PathVariable String id) {
         log.info("Fetching user with id: {}", id);
         return ResponseEntity.ok(mapper.entityToResponse(userService.getUserById(id)));
@@ -88,6 +92,7 @@ public class UserController
      * @return a ResponseEntity containing the updated user and HTTP status OK
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<UserResponse> updateUser(@PathVariable String id,
                                                    @Valid @RequestBody UserRequest userRequest) {
         log.info("Updating user with id: {}", id);
@@ -102,6 +107,7 @@ public class UserController
      * @return a ResponseEntity with no content
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         log.info("Deleting user with id: {}", id);
         userService.deleteUser(id);
@@ -114,6 +120,7 @@ public class UserController
      * @return a ResponseEntity containing a list of all user names
      */
     @GetMapping("/names")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','MANAGER','USER')")
     public ResponseEntity<List<String>> getNames() {
         log.info("Get names of all users");
         return ResponseEntity.ok(userService.getNames());

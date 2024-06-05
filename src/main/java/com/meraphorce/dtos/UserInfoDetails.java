@@ -9,11 +9,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Data Transfer Object to represent user info details.
  *
  */
+@Slf4j
 public class UserInfoDetails implements UserDetails
 {
     private String name;
@@ -29,8 +31,12 @@ public class UserInfoDetails implements UserDetails
         name = userInfo.getName();
         password = userInfo.getPassword();
         authorities = Arrays.stream(userInfo.getRoles().split(","))
-            .map(SimpleGrantedAuthority::new)
+            .map((role) -> {
+                    return new SimpleGrantedAuthority(String.format("ROLE_%s",
+                                                                    role.toUpperCase()));
+                })
             .collect(Collectors.toList());
+        log.debug("Granted authorities: {}", authorities);
     }
 
     @Override
