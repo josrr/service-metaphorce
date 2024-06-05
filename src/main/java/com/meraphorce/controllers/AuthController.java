@@ -63,6 +63,7 @@ public class AuthController
      */
     @PostMapping("/signup")
     public ResponseEntity<SignUpResponse> signUp(@Valid @RequestBody SignUpRequest request) {
+        log.info("Singing up a new user: {}", request);
         return new ResponseEntity<>(signUpMapper.entityToResponse
                                     (userService.createUser(signUpMapper.requestToEntity(request))),
                                     HttpStatus.CREATED);
@@ -76,9 +77,11 @@ public class AuthController
      */
     @PostMapping("/generateToken")
     public ResponseEntity<AuthResponse> authenticateAndGetToken(@Valid @RequestBody AuthRequest authRequest) {
+        log.info("Authenticating user: {}", authRequest.getUsername());
         Authentication authentication = authenticationManager.authenticate
             ( new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()) );
         if ( authentication.isAuthenticated() ) {
+            log.info("User {} successfully authenticated", authRequest.getUsername());
             return ResponseEntity.ok(AuthResponse.builder()
                                      .type("Bearer")
                                      .token(jwtService.generateToken(authRequest.getUsername()))
