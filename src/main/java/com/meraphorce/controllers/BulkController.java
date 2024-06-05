@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/bulk")
+@Slf4j
 public class BulkController
 {
     private final UserService userService;
@@ -38,6 +40,7 @@ public class BulkController
     @PostMapping("/users")
     public ResponseEntity<List<StatusResponse>> createUsersInBulk(@NotEmpty @Size(min=1, max=100)
                                                                   @RequestBody List<UserRequest> users) {
+        log.info("Creating {} users in bulk", users.size());
         return ResponseEntity.ok(userService.createUsersInBulk(users));
     }
 }
